@@ -1,0 +1,91 @@
+// THEORY: Because all CPU-based arithmetic Multiplication-
+//  and Division operations rely on bitwise-, and bitmask operations.
+//  it is hypothesized bitwise-operations will outperform its
+//  classical counterparts.
+
+
+// REM: const tokens = "+ 1 2 4 =".split(' '); //
+
+// SCENARIO 0 (Prime composites) //
+
+let trace = ["Starting SCENARIO 0 (Prime composites) "];
+
+
+//console.time('performanceTest');
+
+//console.timeEnd('performanceTest');
+
+
+const primes = [BigInt('2'), BigInt('3'), BigInt('5'), BigInt('7'), BigInt('11')];
+
+// construct t0 statement of length 100 //
+
+let t0 = BigInt('1');
+
+for( let i = 0 ; i < 1e4 ; ++i)
+{
+  primes.map((u,j,me)=>{ t0 *= u; return u; });
+} 
+
+const startTime = performance.now();
+
+let rewriteFoundFlag = false;
+
+do {
+  rewriteFoundFlag = false;
+  for (let u of primes) {    
+    if (t0%u==0) {
+      t0 /= u;
+      rewriteFoundFlag = true;
+      break;
+    }
+  }
+} while (rewriteFoundFlag);
+
+const endTime = performance.now();
+
+const executionTime = endTime - startTime;
+
+trace.push(`Total runtime: +${executionTime}ns\n`);
+
+trace.push(`Starting SCENARIO 1 (Bit fields)`);
+
+// SCENARIO 1 (Bit fields) //
+
+//const tokens = "+ 1 2 4 =".split(' ');
+
+const bitfields= [BigInt('1'), BigInt('2'), BigInt('4'), BigInt('8'), BigInt('16')];
+
+const N = BigInt(bitfields.length);
+
+// construct t1 statement of length 100 //
+
+let t1 = BigInt('0');
+
+for ( let i = 0 ; i < 1e4; ++i)
+{
+  bitfields.map((u,j,me)=>{ if(j!=0){ t1 <<= N; } t1 &= u; return u; }); // MSB (left)
+}
+
+const startTime2 = performance.now();
+
+do {
+  rewriteFoundFlag = false;
+  for (let u of bitfields) {    
+    if (t1&u) {
+      t1 >>= N;
+      rewriteFoundFlag = true;
+      break;
+    }
+  }
+} while (rewriteFoundFlag);
+
+const endTime2 = performance.now();
+
+const executionTime2 = endTime2 - startTime2;
+
+trace.push(`Total runtime: +${executionTime2}ns\n`);
+
+// RESULTS //
+
+_view.value = trace.join("\n");
