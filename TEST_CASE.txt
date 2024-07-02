@@ -1,5 +1,5 @@
 // THEORY: Because all CPU-based arithmetic Multiplication-
-//  and Division operations rely on bitwise-, and bitmask operations.
+//  and Division operations rely on bitwise-, and bitmask operations,
 //  it is hypothesized bitwise-operations will outperform its
 //  classical counterparts.
 
