@@ -35,7 +35,7 @@
     </style>
 </head>
 <body>
-    <textarea id="_view" placeholder="_view.value = (read only) Output window" readonly></textarea>
+    <textarea id="_view" placeholder="_view.value = (read only) Output window" spellcheck="false" readonly></textarea>
     <div id="editor-container">
         <div id="line-numbers"></div>
         <textarea id="_code" placeholder="_code: Enter source code" spellcheck="false"></textarea>
@@ -53,8 +53,7 @@
         codeArea.addEventListener('keyup', function() {
             updateLineNumbers();
             try {
-                const result = eval(this.value);
-                document.getElementById('_view').value = result !== undefined ? JSON.stringify(result, null, 2) : '';
+                eval(this.value);
             } catch(e) {
                 const errorDetails = {
                     name: e.name,
