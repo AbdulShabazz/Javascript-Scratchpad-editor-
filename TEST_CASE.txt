@@ -64,7 +64,7 @@ let t1 = BigInt('0');
 
 for ( let i = 0 ; i < 1e4; ++i)
 {
-  bitfields.map((u,j,me)=>{ if(j!=0){ t1 <<= N; } t1 &= u; return u; }); // MSB (left)
+  bitfields.map((u,j,me)=>{ if(j!=0){ t1 <<= N; } t1 |= u; return u; }); // MSB (left)
 }
 
 const startTime2 = performance.now();
