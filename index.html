@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Editor</title>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: monospace; }
+        #_view { width: 100%; height: 45vh; resize: vertical; }
+        #editor-container { position: relative; width: 100%; height: 45vh; }
+        #line-numbers { 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+            bottom: 0; 
+            width: 30px; 
+            background-color: #f0f0f0; 
+            padding: 5px; 
+            text-align: right; 
+            overflow: hidden;
+        }
+        #_code { 
+            position: absolute; 
+            left: 40px; 
+            right: 0; 
+            top: 0; 
+            bottom: 0; 
+            width: calc(100% - 40px); 
+            height: 100%; 
+            resize: none; 
+            border: none; 
+            padding: 5px;
+            font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="_view" placeholder="_view: Output window" readonly></textarea>
+    <div id="editor-container">
+        <div id="line-numbers"></div>
+        <textarea id="_code" placeholder="_code: Enter source code" spellcheck="false"></textarea>
+    </div>
+
+    <script>
+        const codeArea = document.getElementById('_code');
+        const lineNumbers = document.getElementById('line-numbers');
+
+        function updateLineNumbers() {
+            const lines = codeArea.value.split('\n');
+            lineNumbers.innerHTML = lines.map((_, index) => index + 1).join('<br>');
+        }
+
+        codeArea.addEventListener('keyup', function() {
+            updateLineNumbers();
+            try {
+                const result = eval(this.value);
+                document.getElementById('_view').value = result !== undefined ? JSON.stringify(result, null, 2) : '';
+            } catch(e) {
+                const errorDetails = {
+                    name: e.name,
+                    message: e.message,
+                    lineNumber: e.lineNumber,
+                    columnNumber: e.columnNumber
+                    //stack: e.stack ? e.stack.split('\n').map(line => line.trim()) : undefined,
+                };
+                document.getElementById('_view').value = JSON.stringify(errorDetails, null, 2)
+                    //.replace(/\\n/g, '\n')
+                    //.replace(/\\"/g, '"');
+            }
+        });
+
+        codeArea.addEventListener('scroll', function() {
+            lineNumbers.scrollTop = this.scrollTop;
+        });
+
+        updateLineNumbers();
+
+        _view.value = '';
+    </script>
+</body>
+</html>
